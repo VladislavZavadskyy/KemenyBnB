@@ -52,7 +52,7 @@ public class BranchAndBound<N extends AbstractNode> {
         AbstractNode.num = 0;
         record = null;
         this.cls = cls;
-        r = AbstractNode.r(rankings);
+        r = RNode.r(rankings);
         nodesExpanded = 0;
         nodesCreated = 1;
 

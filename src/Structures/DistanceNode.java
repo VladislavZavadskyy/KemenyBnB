@@ -1,6 +1,5 @@
 package Structures;
 
-import java.util.Collections;
 import java.util.HashSet;
 
 /**
@@ -27,35 +26,7 @@ public class DistanceNode extends AbstractNode{
         this.squareSum = getSquareSums(ranking,rankings);
     }
 
-    public void prune(int[][] r, int[][] rankings){
-        if (valueIn(sD(r),0)!=-1||valueIn(sDD(r),0)!=-1) {
-            int i, n = ranking.length;
-
-            int[][] modR = mClone(r);
-            for (int j = 0; j < n; j++) {
-                if (ranking[j] != -1)
-                    modR[j][j] = ranking[j];
-            }
-
-            while ((i = valueIn(sD(modR), 0)) != -1) {
-                int min = Collections.min(indexPoll);
-                ranking[i] = min;
-                modR[i][i] = min;
-                indexPoll.remove(min);
-            }
-
-            while ((i = valueIn(sDD(modR), 0)) != -1) {
-                int max = Collections.max(indexPoll);
-                ranking[i] = max;
-                modR[i][i] = max;
-                indexPoll.remove(max);
-            }
-
-
-            squareSum = getSquareSums(ranking,rankings);
-            cost = eval(rankings);
-        }
-    }
+    public void prune(int[][] r, int[][] rankings){}
 
     @Override
     public String toString(){

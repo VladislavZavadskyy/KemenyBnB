@@ -51,7 +51,8 @@ class RunParameters extends JDialog  {
         //region groups enablers
         runBnBCheck.addActionListener(e -> {
             if (runBnBCheck.isSelected()){
-                pruneCheck.setEnabled(true);
+                if (bnbMode.getSelectedIndex()==0)
+                    pruneCheck.setEnabled(true);
                 writeDetCheck.setEnabled(true);
                 bnbMode.setEnabled(true);
             } else {
@@ -59,6 +60,12 @@ class RunParameters extends JDialog  {
                 writeDetCheck.setEnabled(false);
                 bnbMode.setEnabled(false);
             }
+        });
+
+        bnbMode.addItemListener(e->{
+            if(e.getItem()=="R evaluation")
+                pruneCheck.setEnabled(true);
+            else pruneCheck.setEnabled(false);
         });
 
         includeBruteCheck.addActionListener(e -> {

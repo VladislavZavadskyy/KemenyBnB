@@ -1,7 +1,6 @@
 package Structures;
 
 import Algorithms.BranchAndBound;
-import org.jetbrains.annotations.Contract;
 
 import java.util.HashSet;
 
@@ -41,99 +40,6 @@ public abstract class AbstractNode {
 
     public abstract void prune(int[][] r, int[][] rankings);
     public abstract double eval(int[][]rankings);
-
-    //region r calculators
-    public static int[][] r(int[][] rankings){
-        int n = rankings[0].length;
-        int[][] P = new int[n][n];
-
-        for (int i = 0; i < n; i++)
-            for (int j = 0; j < n; j++)
-                P[i][j] = 1;
-
-        return r(rankings, P);
-    }
-
-    static int[][] r(int[][] rankings, int[][] P) {
-        int n = rankings[0].length;
-        int[][][] p = p(rankings);
-        int[][] r = new int[n][n];
-
-        for (int[][] pv : p)
-            for (int i = 0; i < n; i++)
-                for (int j = 0; j < n; j++)
-                    r[i][j] += Math.abs(pv[i][j] - P[i][j]);
-
-        for (int i = 0; i < n; i++)
-            r[i][i] = 0;
-
-        return r;
-    }
-    //endregion
-
-    //region p calculators
-    private static int[][][] p(int[][] rankings){
-        int m = rankings.length;
-        int[][][] p = new int[m][][];
-
-        for (int v = 0; v < m; v++)
-            p[v] = p(rankings[v]);
-
-        return p;
-    }
-
-    static int[][] p(int[] ranking){
-        int n = ranking.length;
-        int[][] p = new int[n][n];
-
-        for (int i = 0; i < n; i++)
-            for (int j = 0; j < n; j++)
-                p[i][j] = (ranking[j] == ranking[i]) ? 0 :
-                        (ranking[j] > ranking[i]) ? 1 : -1;
-
-        return p;
-    }
-    //endregion
-
-    //region s (double) dash calculators
-    @Contract(pure = true)
-    static int[] sD(int[][] r){
-        int n = r.length;
-        int[] tensor = new int[n];
-
-        for (int i = 0; i < n; i++) {
-            if (r[i][i] != 0) {
-                tensor[i]=-1;
-                continue;
-            }
-            for (int j = 0; j < n; j++) {
-                if (r[j][j] != 0) continue;
-                tensor[i] += (r[i][j] > r[j][i]) ? 1 : 0;
-            }
-        }
-
-        return tensor;
-    }
-
-    @Contract(pure = true)
-    static int[] sDD(int[][] r){
-        int n = r.length;
-        int[] tensor = new int[n];
-
-        for (int i = 0; i < n; i++) {
-            if (r[i][i] != 0) {
-                tensor[i]=-1;
-                continue;
-            }
-            for (int j = 0; j < n; j++) {
-                if (r[j][j] != 0) continue;
-                tensor[i] += (r[i][j] < r[j][i]) ? 1 : 0;
-            }
-        }
-
-        return tensor;
-    }
-    //endregion
 
     //region helpers
     public static int valueIn(int array[], int value){
