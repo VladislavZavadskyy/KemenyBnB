@@ -1,5 +1,6 @@
 package Structures;
 
+import java.util.ArrayList;
 import java.util.Collections;
 
 /**
@@ -10,42 +11,41 @@ import java.util.Collections;
  */
 public class RNode extends AbstractNode {
 
+    public static int[][] r;
+    private ArrayList<Integer> rankList;
+
     public RNode(RNode Parent, int[] Ranking, int[][] rankings, int diff){
         super(Parent, Ranking,rankings, diff);
-        this.cost = eval(rankings);
+        rankList = new ArrayList<>(Parent.rankList);
+        rankList.set(diff,ranking[diff]);
+        eval();
     }
 
     public RNode(RNode Parent, int[] Ranking, int[][] rankings){
         super(Parent, Ranking,rankings);
-        this.cost = eval(rankings);
+        r = r(rankings);
+        rankList = rankToList();
+        eval();
     }
 
-    public void prune(int[][] r, int[][] rankings){
-        if (valueIn(sD(r),0)!=-1||valueIn(sDD(r),0)!=-1) {
-            int i, n = ranking.length;
+    public void prune(){
+        int i;
 
-            int[][] modR = mClone(r);
-            for (int j = 0; j < n; j++) {
-                if (ranking[j] != -1)
-                    modR[j][j] = ranking[j];
-            }
-
-            while ((i = valueIn(sD(modR), 0)) != -1) {
-                int min = Collections.min(indexPoll);
-                ranking[i] = min;
-                modR[i][i] = min;
-                indexPoll.remove(min);
-            }
-
-            while ((i = valueIn(sDD(modR), 0)) != -1) {
-                int max = Collections.max(indexPoll);
-                ranking[i] = max;
-                modR[i][i] = max;
-                indexPoll.remove(max);
-            }
-
-            cost = eval(rankings);
+        while ((i = valueIn(sD(r), 0)) != -1) {
+            int min = Collections.min(indexPoll);
+            ranking[i] = min;
+            rankList.set(i,min);
+            indexPoll.remove(min);
         }
+
+        while ((i = valueIn(sDD(r), 0)) != -1) {
+            int max = Collections.max(indexPoll);
+            ranking[i] = max;
+            rankList.set(i,max);
+            indexPoll.remove(max);
+        }
+
+        eval();
     }
 
     @Override
@@ -59,6 +59,24 @@ public class RNode extends AbstractNode {
         s+=String.format("\tRanking: \r\n\t%s\r\n", transform(ranking));
         s+=String.format("\tR Cost: %1$,.2f\r\n",  cost);
         return s;
+    }
+
+    private void eval(){
+        int n = ranking.length, p,q;
+        for(int i = 1; i < n+1; i++)
+        for(int j = i+1; j < n+1; j++) {
+            p = rankList.indexOf(i);
+            q = rankList.indexOf(j);
+            if (p!=-1 && q!=-1)
+                cost += r[p][q];
+        }
+    }
+
+    private ArrayList<Integer> rankToList(){
+        ArrayList<Integer> rankList = new ArrayList<>();
+        for(int rank:ranking)
+            rankList.add(rank);
+        return rankList;
     }
 
     //region r calculators
@@ -90,41 +108,6 @@ public class RNode extends AbstractNode {
     }
     //endregion
 
-    //region r evaluators
-    private static double evalR(int[][] r){
-        int sum = 0, n = r.length;
-
-        for (int i = 0; i < n; i++)
-            for (int j = i+1; j < n; j++)
-                sum += r[i][j];
-
-        return sum;
-    }
-
-    public double eval(int[][]rankings){
-        int n=0, c=0;
-        for (int i : ranking)
-            if (i>0) n++;
-        int[] curPruned = new int[n];
-        for (int i : ranking)
-            if (i>0) {
-                curPruned[c]=i;
-                c++;
-            }
-
-        c=0;
-        int[][] tmpRankings = new int[rankings.length][n];
-
-        for (int i = 0; i < ranking.length; i++)
-            if (ranking[i]>0){
-                for(int j =0; j < rankings.length; j++)
-                    tmpRankings[j][c]=rankings[j][i];
-                c++;
-            }
-        return evalR(r(tmpRankings, p(curPruned)));
-    }
-    //endregion
-
     //region p calculators
     private static int[][][] p(int[][] rankings){
         int m = rankings.length;
@@ -150,38 +133,34 @@ public class RNode extends AbstractNode {
     //endregion
 
     //region s (double) dash calculators
-    private static int[] sD(int[][] r){
+    private int[] sD(int[][] r){
         int n = r.length;
         int[] tensor = new int[n];
-
-        for (int i = 0; i < n; i++) {
-            if (r[i][i] != 0) {
+        for(int i=0; i<n; i++)
+            if (rankList.get(i)>0)
                 tensor[i]=-1;
-                continue;
-            }
-            for (int j = 0; j < n; j++) {
-                if (r[j][j] != 0) continue;
-                tensor[i] += (r[i][j] > r[j][i]) ? 1 : 0;
-            }
-        }
+
+        for(int i=0; i<r.length; i++)
+            if (rankList.get(i)<0)
+                for (int j = 0; j < r.length; j++)
+                    if (rankList.get(j) < 0)
+                        tensor[i] += (r[i][j] > r[j][i]) ? 1 : 0;
 
         return tensor;
     }
 
-    private static int[] sDD(int[][] r){
+    private int[] sDD(int[][] r){
         int n = r.length;
         int[] tensor = new int[n];
-
-        for (int i = 0; i < n; i++) {
-            if (r[i][i] != 0) {
+        for(int i=0; i<n; i++)
+            if (rankList.get(i)>0)
                 tensor[i]=-1;
-                continue;
-            }
-            for (int j = 0; j < n; j++) {
-                if (r[j][j] != 0) continue;
-                tensor[i] += (r[i][j] < r[j][i]) ? 1 : 0;
-            }
-        }
+
+        for(int i =0; i<r.length; i++)
+            if (rankList.get(i)<0)
+            for (int j = 0; j < r.length; j++)
+                if (rankList.get(j) < 0)
+                    tensor[i] += (r[i][j] < r[j][i]) ? 1 : 0;
 
         return tensor;
     }

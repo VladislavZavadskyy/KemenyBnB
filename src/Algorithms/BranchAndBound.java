@@ -111,7 +111,7 @@ public class BranchAndBound<N extends AbstractNode> {
             //endregion
             //region prune
             if (prune)
-                min.prune(r, rankings);
+                min.prune();
             //endregion
             bnbCall(min);
             leafs.remove(min);
@@ -146,13 +146,13 @@ public class BranchAndBound<N extends AbstractNode> {
     private void costsWriter(N node) throws NoSuchMethodException, IllegalAccessException,
             InvocationTargetException, InstantiationException {
         if (cls == DistanceNode.class) {
-            f.write(String.format("Distance: %1$,.2f\r\n", node.eval(rankings)));
+            f.write(String.format("Distance: %1$,.2f\r\n", node.cost));
             f.write(String.format("R cost: %d\r\n", (int) RNode.class.getDeclaredConstructor(RNode.class, int[].class, int[][].class)
                     .newInstance(null,node.ranking,rankings).cost));
         } else {
             f.write(String.format("Distance: %1$,.2f\r\n", DistanceNode.class.getDeclaredConstructor(DistanceNode.class, int[].class, int[][].class)
                     .newInstance(null,node.ranking,rankings).cost));
-            f.write(String.format("R cost: %d\r\n", (int)node.eval(rankings)));
+            f.write(String.format("R cost: %d\r\n", (int)node.cost));
         }
     }
 }

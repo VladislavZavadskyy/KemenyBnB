@@ -26,7 +26,7 @@ public class DistanceNode extends AbstractNode{
         this.squareSum = getSquareSums(ranking,rankings);
     }
 
-    public void prune(int[][] r, int[][] rankings){}
+    public void prune(){}
 
     @Override
     public String toString(){

@@ -28,6 +28,7 @@ public abstract class AbstractNode {
         this.indexPoll = (HashSet<Integer>)parent.indexPoll.clone();
         indexPoll.remove(ranking[diff]);
         node_num = ++num;
+        this.cost = 0;
     }
 
     AbstractNode(AbstractNode Parent, int[] Ranking, int[][] rankings){
@@ -36,10 +37,10 @@ public abstract class AbstractNode {
         diff = -1;
         this.indexPoll = formIndexPoll(ranking);
         node_num = ++num;
+        this.cost = 0;
     }
 
-    public abstract void prune(int[][] r, int[][] rankings);
-    public abstract double eval(int[][]rankings);
+    public abstract void prune();
 
     //region helpers
     public static int valueIn(int array[], int value){
