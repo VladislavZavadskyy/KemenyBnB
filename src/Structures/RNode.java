@@ -44,7 +44,7 @@ public class RNode extends AbstractNode {
             rankList.set(i,max);
             indexPoll.remove(max);
         }
-
+        cost = 0;
         eval();
     }
 
