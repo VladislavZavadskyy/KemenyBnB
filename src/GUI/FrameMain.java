@@ -176,7 +176,7 @@ public class FrameMain extends JFrame {
                 n = Integer.parseInt(nField.getText());
                 if (n<=0) throw new Exception();
                 parameters.add(createTable(n,m));
-                parameters.add(createButton, BorderLayout.PAGE_END);
+                parameters.add(calculateButton, BorderLayout.PAGE_END);
                 pack(); repaint();
             } catch (Exception exc) {
                 cur.setBackground(Color.PINK);

@@ -167,6 +167,7 @@ class RunParameters extends JDialog  {
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         pack();
+        setResizable(false);
         setVisible(true);
     }
 
