@@ -34,7 +34,7 @@ public class DistanceNode extends AbstractNode{
         if (parent == null)
             s+="Root node\r\n";
         else
-            s+=String.format("\r\nStructures.DistanceNode %d, child of node %d.\r\n",
+            s+=String.format("\r\nDistanceNode %d, child of node %d.\r\n",
                     node_num, parent.node_num);
         s+=String.format("\tRanking: \r\n\t%s\r\n", transform(ranking));
         s+=String.format("\tDistance: %1$,.2f\r\n",  cost);
@@ -42,7 +42,7 @@ public class DistanceNode extends AbstractNode{
     }
 
     //region distance evaluators
-    public double eval(int[][] rankings){
+    private double eval(int[][] rankings){
         HashSet<Integer> indexes = new HashSet<>();
         double squareSum, distSum = 0;
         for (int i = 0, l = ranking.length; i < l; i++)
