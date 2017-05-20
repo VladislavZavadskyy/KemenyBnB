@@ -103,7 +103,7 @@ public class BranchAndBound<N extends AbstractNode> {
                 if (cur.cost < min.cost) min = cur;
             }
             //endregion
-            //region check if record is optimal
+            //region check if record is conditionally optimal
             if (record != null && min.cost > record.cost) {
                 leafs.clear();
                 return;

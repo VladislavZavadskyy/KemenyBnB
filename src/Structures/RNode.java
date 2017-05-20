@@ -11,7 +11,7 @@ import java.util.Collections;
  */
 public class RNode extends AbstractNode {
 
-    public static int[][] r;
+    private static int[][] r;
     private ArrayList<Integer> rankList;
 
     public RNode(RNode Parent, int[] Ranking, int[][] rankings, int diff){
@@ -79,19 +79,8 @@ public class RNode extends AbstractNode {
         return rankList;
     }
 
-    //region r calculators
-    public static int[][] r(int[][] rankings){
-        int n = rankings[0].length;
-        int[][] P = new int[n][n];
-
-        for (int i = 0; i < n; i++)
-            for (int j = 0; j < n; j++)
-                P[i][j] = 1;
-
-        return r(rankings, P);
-    }
-
-    private static int[][] r(int[][] rankings, int[][] P) {
+    //region r calculator
+    public static int[][] r(int[][] rankings) {
         int n = rankings[0].length;
         int[][][] p = p(rankings);
         int[][] r = new int[n][n];
@@ -99,7 +88,7 @@ public class RNode extends AbstractNode {
         for (int[][] pv : p)
             for (int i = 0; i < n; i++)
                 for (int j = 0; j < n; j++)
-                    r[i][j] += Math.abs(pv[i][j] - P[i][j]);
+                    r[i][j] += Math.abs(pv[i][j] - 1);
 
         for (int i = 0; i < n; i++)
             r[i][i] = 0;
