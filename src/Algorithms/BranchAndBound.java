@@ -23,7 +23,6 @@ public class BranchAndBound<N extends AbstractNode> {
     private FileIO f;
     private boolean prune, detail;
     private N record;
-    private int r[][];
     private int nodesExpanded, nodesCreated;
     private Class<N> cls;
 
@@ -52,7 +51,6 @@ public class BranchAndBound<N extends AbstractNode> {
         AbstractNode.num = 0;
         record = null;
         this.cls = cls;
-        r = RNode.r(rankings);
         nodesExpanded = 0;
         nodesCreated = 1;
 
@@ -75,7 +73,9 @@ public class BranchAndBound<N extends AbstractNode> {
         f.write(String.format("Nodes created: %d\r\n", nodesCreated));
         f.write(String.format("Time elapsed: %d ms.\r\n", System.currentTimeMillis() - sTime));
         f.write("_____________________________________\r\n");
+        f.write(String.format("%d\r\n", System.currentTimeMillis() - sTime));
         //endregion
+        RNode.r = null;
         return record != null ? record.ranking : new int[0];
     }
 

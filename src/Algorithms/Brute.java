@@ -45,6 +45,7 @@ public class Brute<N extends AbstractNode> {
         f.write(String.format("Time elapsed: %d ms.\r\n", System.currentTimeMillis() - sTime));
         f.write("\r\n_____________________________________\r\n");
         //endregion
+        RNode.r = null;
         return min.ranking;
     }
 

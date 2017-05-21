@@ -11,7 +11,7 @@ import java.util.Collections;
  */
 public class RNode extends AbstractNode {
 
-    private static int[][] r;
+    public static int[][] r;
     private ArrayList<Integer> rankList;
 
     public RNode(RNode Parent, int[] Ranking, int[][] rankings, int diff){
@@ -23,7 +23,7 @@ public class RNode extends AbstractNode {
 
     public RNode(RNode Parent, int[] Ranking, int[][] rankings){
         super(Parent, Ranking,rankings);
-        r = r(rankings);
+        if (r==null) r = r(rankings);
         rankList = rankToList();
         eval();
     }
@@ -80,7 +80,7 @@ public class RNode extends AbstractNode {
     }
 
     //region r calculator
-    public static int[][] r(int[][] rankings) {
+    private static int[][] r(int[][] rankings) {
         int n = rankings[0].length;
         int[][][] p = p(rankings);
         int[][] r = new int[n][n];
