@@ -73,7 +73,6 @@ public class BranchAndBound<N extends AbstractNode> {
         f.write(String.format("Nodes created: %d\r\n", nodesCreated));
         f.write(String.format("Time elapsed: %d ms.\r\n", System.currentTimeMillis() - sTime));
         f.write("_____________________________________\r\n");
-        f.write(String.format("%d\r\n", System.currentTimeMillis() - sTime));
         //endregion
         RNode.r = null;
         return record != null ? record.ranking : new int[0];
