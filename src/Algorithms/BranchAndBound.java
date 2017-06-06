@@ -21,7 +21,7 @@ public class BranchAndBound<N extends AbstractNode> {
     private int[][] rankings; //a matrix with element equal to ranking
                               // of alternative i of expert j
     private FileIO f;
-    private boolean prune, detail;
+    private boolean prune, detail, header;
     private N record;
     private int nodesExpanded, nodesCreated;
     private Class<N> cls;
@@ -54,6 +54,7 @@ public class BranchAndBound<N extends AbstractNode> {
         nodesExpanded = 0;
         nodesCreated = 1;
 
+        header = Objects.equals(props.getProperty("write.head"), "t");
         prune = Objects.equals(props.getProperty("apply.prune"), "t");
         detail = Objects.equals(props.getProperty("write.det"), "t");
     }
@@ -62,8 +63,22 @@ public class BranchAndBound<N extends AbstractNode> {
     public int[] run() throws NoSuchMethodException,
             IllegalAccessException, InvocationTargetException, InstantiationException {
         long sTime = System.currentTimeMillis();
-        bnbCall(cls.getDeclaredConstructor(cls,int[].class,int[][].class)
-                .newInstance(null,init(rankings[0].length, -1),rankings));
+        //region create root node
+        N root = cls.getDeclaredConstructor(cls,int[].class,int[][].class)
+                .newInstance(null,init(rankings[0].length, -1),rankings);
+        //endregion
+        //region write loss matrix (if R evaluation)
+        if (cls == RNode.class&&header) {
+            f.write("\r\nLoss matrix (R):\r\n\r\n");
+            for (int[] row: RNode.r) {
+                for (int el : row)
+                    f.write(String.format("%d ", el));
+                f.write("\r\n");
+            }
+            f.write("\r\n");
+        }
+        //endregion
+        bnbCall(root);
         //region write summary
         f.write("\r\n_____________________________________");
         f.write("\r\n\tSolution obtained:\r\n");
